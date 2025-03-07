@@ -58,6 +58,30 @@ router.get('/', authenticateUser, async (req, res) => {
     }
 });
 
+// Delete a game
+router.delete('/:id', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id);
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        if (game.creator.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Only the creator can delete the game' });
+        }
+
+        if (game.players.length > 1) {
+            return res.status(400).json({ message: 'Cannot delete game with active players' });
+        }
+
+        await Game.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Game deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting game', error: error.message });
+    }
+});
+
 // Join a game
 router.post('/:id/join', authenticateUser, async (req, res) => {
     try {
