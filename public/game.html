@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Game - Waiting Area</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .page-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            padding: 40px;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-card, .top-players-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .top-players-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-player-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .games-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form input, 
+        .modal-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-form button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .modal-form button:hover {
+            background: #764ba2;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+        }
+
+        .game-card h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .game-info {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .button-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button-primary:hover {
+            background: #764ba2;
+        }
+
+        .button-join {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .button-join:hover:not([disabled]) {
+            background: #45a049;
+        }
+
+        .button-join[disabled] {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .button-join[disabled]:hover {
+            background: #cccccc;
+        }
+
+        .button-delete {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .button-delete:hover {
+            background: #cc0000;
+        }
+
+        .game-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .logout-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            background: #cc0000;
+        }
+
+        h2 {
+            color: white;
+            margin: 0 0 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-layout">
+        <div class="sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <span id="userInitial"></span>
+                </div>
+                <h2 id="profileUsername"></h2>
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div>Games</div>
+                        <div id="gamesPlayed">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div>Wins</div>
+                        <div id="gamesWon">0</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="top-players-card">
+                <h2>Top Players</h2>
+                <ul class="top-players-list">
+                    <li class="top-player-item">
+                        <span>🥇 Player 1</span>
+                        <span>42 wins</span>
+                    </li>
+                    <li class="top-player-item">
+                        <span>🥈 Player 2</span>
+                        <span>38 wins</span>
+                    </li>
+                    <li class="top-player-item">
+                        <span>🥉 Player 3</span>
+                        <span>31 wins</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="games-header">
+                <h2>Active Games</h2>
+                <button class="button-primary" onclick="openCreateGameModal()">Create Game</button>
+            </div>
+
+            <div class="games-grid" id="gamesList">
+                <!-- Games will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Game Modal -->
+    <div id="createGameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Game</h2>
+                <button class="close-modal" onclick="closeCreateGameModal()">&times;</button>
+            </div>
+            <form class="modal-form" onsubmit="handleCreateGame(event)">
+                <input type="text" id="gameName" placeholder="Game Name" required>
+                <select id="maxPlayers">
+                    <option value="2">2 Players</option>
+                    <option value="3">3 Players</option>
+                    <option value="4">4 Players</option>
+                </select>
+                <button type="submit">Create Game</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        function openCreateGameModal() {
+            document.getElementById('createGameModal').classList.add('active');
+        }
+
+        function closeCreateGameModal() {
+            document.getElementById('createGameModal').classList.remove('active');
+            document.getElementById('gameName').value = '';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('createGameModal').addEventListener('click', (event) => {
+            if (event.target.id === 'createGameModal') {
+                closeCreateGameModal();
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && document.getElementById('createGameModal').classList.contains('active')) {
+                closeCreateGameModal();
+            }
+        });
+
+        // Handle form submission
+        async function handleCreateGame(event) {
+            event.preventDefault();
+            const name = document.getElementById('gameName').value;
+            const maxPlayers = document.getElementById('maxPlayers').value;
+            
+            if (!name) {
+                alert('Please enter a game name');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/games`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name, maxPlayers: parseInt(maxPlayers) })
+                });
+
+                if (response.ok) {
+                    const game = await response.json();
+                    closeCreateGameModal();
+                    window.location.href = `game-session.html?id=${game._id}`;
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error creating game');
+                }
+            } catch (error) {
+                console.error('Error creating game:', error);
+                alert('Error creating game');
+            }
+        }
+
+        const API_URL = 'http://localhost:3000/api';
+        const currentUser = localStorage.getItem('currentUser');
+        
+        // Load user profile
+        async function loadProfile() {
+            try {
+                const response = await fetch(`${API_URL}/auth/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const user = await response.json();
+                
+                document.getElementById('profileUsername').textContent = user.username;
+                document.getElementById('userInitial').textContent = user.username.charAt(0).toUpperCase();
+                document.getElementById('gamesPlayed').textContent = user.gamesPlayed;
+                document.getElementById('gamesWon').textContent = user.gamesWon;
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        // Load top players
+        async function loadTopPlayers() {
+            try {
+                const response = await fetch(`${API_URL}/auth/top-players`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const topPlayers = await response.json();
+                
+                const topPlayersList = document.querySelector('.top-players-list');
+                topPlayersList.innerHTML = '';
+                
+                const medals = ['🥇', '🥈', '🥉'];
+                topPlayers.forEach((player, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'top-player-item';
+                    li.innerHTML = `
+                        <span>${medals[index]} ${player.username}</span>
+                        <span>${player.gamesWon} wins</span>
+                    `;
+                    topPlayersList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error loading top players:', error);
+            }
+        }
+
+        // Fetch and display games
+        async function loadGames() {
+            try {
+                const response = await fetch(`${API_URL}/games`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const games = await response.json();
+                displayGames(games);
+            } catch (error) {
+                console.error('Error loading games:', error);
+            }
+        }
+
+        function displayGames(games) {
+            const gamesList = document.getElementById('gamesList');
+            gamesList.innerHTML = '';
+
+            games.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                
+                const isJoined = game.players.some(player => player.username === currentUser);
+                const isFull = game.players.length >= game.maxPlayers;
+                
+                gameCard.innerHTML = `
+                    <h3>${game.name}</h3>
+                    <div class="game-info">Status: ${game.status}</div>
+                    <div class="game-info">Players: ${game.players.map(p => p.username).join(', ')}</div>
+                    <div class="game-info">Created by: ${game.creator.username}</div>
+                    <div class="game-info">Max Players: ${game.maxPlayers}</div>
+                    <div class="game-buttons">
+                        <button 
+                            class="button-join" 
+                            onclick="${isJoined ? 
+                                `window.location.href='game-session.html?id=${game._id}'` : 
+                                `joinGame('${game._id}')`}"
+                            ${(!isJoined && (isFull || game.status !== 'waiting')) ? 'disabled' : ''}
+                        >
+                            ${isJoined ? 'Return to Game' : 
+                              isFull ? 'Game Full' :
+                              game.status !== 'waiting' ? 'Game In Progress' : 
+                              'Join Game'}
+                        </button>
+                        ${(game.creator.username === currentUser && game.players.length <= 1) ? 
+                            `<button 
+                                class="button-delete" 
+                                onclick="deleteGame('${game._id}')"
+                            >
+                                Delete Game
+                            </button>` : 
+                            ''}
+                    </div>
+                `;
+                
+                gamesList.appendChild(gameCard);
+            });
+        }
+
+        // Delete a game
+        async function deleteGame(gameId) {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    loadGames();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error deleting game');
+                }
+            } catch (error) {
+                console.error('Error deleting game:', error);
+                alert('Error deleting game');
+            }
+        }
+
+        // Join a game
+        async function joinGame(gameId) {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    window.location.href = `game-session.html?id=${gameId}`;
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error joining game');
+                }
+            } catch (error) {
+                console.error('Error joining game:', error);
+                alert('Error joining game');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initial load
+        checkAuth();
+        loadProfile();
+        loadTopPlayers();
+        loadGames();
+
+        // Refresh data periodically
+        setInterval(() => {
+            loadGames();
+            loadProfile();
+            loadTopPlayers();
+        }, 5000);
+    </script>
+</body>
+</html>

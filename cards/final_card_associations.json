@@ -1,0 +1,69 @@
+{
+    "Number_Cards": {
+        "1": "/cards/1.png",
+        "2": "/cards/2.png",
+        "3": "/cards/3.png",
+        "4": "/cards/4.png",
+        "5": "/cards/5.png",
+        "6": "/cards/6.png",
+        "7": "/cards/7.png",
+        "8": "/cards/8.png",
+        "9": "/cards/9.png",
+        "10": "/cards/10.png"
+    },
+    "King": "/cards/chess_king.jpeg",
+    "Knight": "/cards/knight.jpeg",
+    "Dragon": "/cards/dragon.jpeg",
+    "Sleep": "/cards/sleepingpotion.jpeg",
+    "Magic Wand": "/cards/magicwand.jpeg",
+    "Queens": {
+        "Rose Queen": {
+            "image": "/cards/rose_queen.jpeg",
+            "value": 5
+        },
+        "Cat Queen": {
+            "image": "/cards/cat_queen.webp",
+            "value": 5
+        },
+        "Dog Queen": {
+            "image": "/cards/dog_queen.jpeg",
+            "value": 5
+        },
+        "Starfish Queen": {
+            "image": "/cards/starfish_queen.jpeg",
+            "value": 5
+        },
+        "Pancake Queen": {
+            "image": "/cards/pancake_queen.webp",
+            "value": 10
+        },
+        "Rainbow Queen": {
+            "image": "/cards/rainbow_queen.jpeg",
+            "value": 10
+        },
+        "Moon Queen": {
+            "image": "/cards/moon_queen.jpeg",
+            "value": 10
+        },
+        "Sunflower Queen": {
+            "image": "/cards/sunflower_queen.jpeg",
+            "value": 10
+        },
+        "Ladybug Queen": {
+            "image": "/cards/ladybug_queen.jpeg",
+            "value": 15
+        },
+        "Butterfly Queen": {
+            "image": "/cards/flower_queen.webp",
+            "value": 15
+        },
+        "Flowers Queen": {
+            "image": "/cards/bubblegum_queen.jpeg",
+            "value": 20
+        },
+        "Chess Queen": {
+            "image": "/cards/chess_queen.jpeg",
+            "value": 20
+        }
+    }
+}

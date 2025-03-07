@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Session</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .game-header {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-info {
+            flex: 1;
+        }
+
+        .game-title {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .player-status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .leave-button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .leave-button:hover {
+            background: #cc0000;
+        }
+
+        .game-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            min-height: 500px;
+        }
+
+        .players-list {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .players-list h3 {
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        .player-status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+
+        .waiting-message {
+            text-align: center;
+            font-size: 24px;
+            color: #ffffff;
+            margin-top: 200px;
+        }
+
+        .player-count {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-info">
+                <h1 class="game-title" id="gameName">Loading game...</h1>
+                <div class="player-status" id="playerCount">
+                    Waiting for players (<span class="player-count">0</span>/<span id="maxPlayers">0</span>)
+                </div>
+            </div>
+            <button class="leave-button" onclick="leaveGame()">Leave Game</button>
+        </div>
+
+        <div class="game-content">
+            <div class="players-list">
+                <h3>Players</h3>
+                <div id="playersList">
+                    <!-- Players will be loaded here -->
+                </div>
+            </div>
+            <div class="game-area">
+                <div class="waiting-message">
+                    Waiting for players to join...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        const gameId = new URLSearchParams(window.location.search).get('id');
+        const currentUser = localStorage.getItem('currentUser');
+
+        // Leave game function
+        async function leaveGame() {
+            if (!confirm('Are you sure you want to leave the game?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/leave`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    window.location.href = 'game.html';
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error leaving game');
+                }
+            } catch (error) {
+                console.error('Error leaving game:', error);
+                alert('Error leaving game');
+            }
+        }
+
+        // Load game details
+        async function loadGameDetails() {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const game = await response.json();
+                
+                document.getElementById('gameName').textContent = game.name;
+                document.getElementById('maxPlayers').textContent = game.maxPlayers;
+                document.querySelector('.player-count').textContent = game.players.length;
+
+                // Update players list
+                const playersList = document.getElementById('playersList');
+                playersList.innerHTML = game.players.map(player => `
+                    <div class="player-item">
+                        <div class="player-status-indicator"></div>
+                        <div>${player.username}${player.username === game.creator.username ? ' (Creator)' : ''}</div>
+                    </div>
+                `).join('');
+
+                // Update waiting message if game is full
+                const waitingMessage = document.querySelector('.waiting-message');
+                if (game.players.length >= game.maxPlayers) {
+                    waitingMessage.textContent = 'All players have joined! Game will start soon...';
+                }
+            } catch (error) {
+                console.error('Error loading game details:', error);
+            }
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initial load
+        checkAuth();
+        loadGameDetails();
+
+        // Refresh game details periodically
+        setInterval(loadGameDetails, 2000);
+    </script>
+</body>
+</html>
