@@ -91,12 +91,16 @@
             flex: 1;
         }
 
-        .player-status-indicator {
-            width: 8px;
-            height: 8px;
+        .player-avatar {
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            object-fit: cover;
+            border: 2px solid rgba(76, 175, 80, 0.5);
+        }
+
+        .spectator-avatar {
+            border-color: rgba(108, 117, 125, 0.5);
         }
 
         .chat-box {
@@ -214,11 +218,6 @@
             background: #cc0000;
         }
 
-        .spectator-indicator {
-            background: #6c757d !important;
-            box-shadow: 0 0 5px rgba(108, 117, 125, 0.5) !important;
-        }
-
         .creator-badge {
             background: #0d6efd;
             color: white;
@@ -322,10 +321,12 @@
                 playersList.innerHTML = game.players.map(player => `
                     <div class="player-item ${player.username === currentUser ? 'current-user' : ''}">
                         <div class="player-info">
-                            <div class="player-status-indicator"></div>
-                            <div>${player.username}</div>
-                            ${player.username === game.creator.username ? 
-                                '<span class="creator-badge">Creator</span>' : ''}
+                            <img src="${player.avatar}" alt="Avatar" class="player-avatar">
+                            <div>
+                                <div>${player.username}</div>
+                                ${player.username === game.creator.username ? 
+                                    '<span class="creator-badge">Creator</span>' : ''}
+                            </div>
                         </div>
                     </div>
                 `).join('');
@@ -336,7 +337,7 @@
                 spectatorsList.innerHTML = game.spectators.map(spectator => `
                     <div class="player-item">
                         <div class="player-info">
-                            <div class="player-status-indicator spectator-indicator"></div>
+                            <img src="${spectator.avatar}" alt="Avatar" class="player-avatar spectator-avatar">
                             <div>${spectator.username}</div>
                         </div>
                     </div>

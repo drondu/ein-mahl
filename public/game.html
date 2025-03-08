@@ -8,8 +8,8 @@
     <style>
         .page-layout {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
             padding: 40px;
             max-width: 1800px;
             margin: 0 auto;
@@ -43,6 +43,12 @@
             align-items: center;
             justify-content: center;
             font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
         }
 
         .profile-stats {
@@ -75,7 +81,8 @@
         .main-content {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            padding: 40px;
+            padding: 30px;
+            min-width: 0; /* Prevent overflow in grid */
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -172,7 +179,7 @@
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             overflow-y: auto;
         }
@@ -280,9 +287,11 @@
     <div class="page-layout">
         <div class="sidebar">
             <div class="profile-card">
-                <div class="profile-avatar">
-                    <span id="userInitial"></span>
-                </div>
+                <a href="profile.html" style="text-decoration: none; color: inherit;">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <!-- Avatar image or initials will be set by JS -->
+                    </div>
+                </a>
                 <h2 id="profileUsername"></h2>
                 <div class="profile-stats">
                     <div class="stat-box">
@@ -294,9 +303,12 @@
                         <div id="gamesWon">0</div>
                     </div>
                 </div>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-                <div id="adminButton" style="display: none; margin-top: 10px;">
-                    <a href="admin.html" class="button-primary" style="display: block; text-decoration: none;">Admin Dashboard</a>
+                <div class="profile-buttons" style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                    <a href="profile.html" class="button-primary" style="text-align: center; text-decoration: none;">View Profile</a>
+                    <div id="adminButton" style="display: none;">
+                        <a href="admin.html" class="button-primary" style="display: block; text-decoration: none;">Admin Dashboard</a>
+                    </div>
                 </div>
             </div>
 
@@ -470,7 +482,12 @@
                 const user = await response.json();
                 
                 document.getElementById('profileUsername').textContent = user.username;
-                document.getElementById('userInitial').textContent = user.username.charAt(0).toUpperCase();
+                const profileAvatar = document.getElementById('profileAvatar');
+                if (user.avatar) {
+                    profileAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                } else {
+                    profileAvatar.innerHTML = `<span style="font-size: 40px;">${user.username.charAt(0).toUpperCase()}</span>`;
+                }
                 document.getElementById('gamesPlayed').textContent = user.gamesPlayed;
                 document.getElementById('gamesWon').textContent = user.gamesWon;
 

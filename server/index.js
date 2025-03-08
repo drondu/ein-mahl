@@ -3,12 +3,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const authRoutes = require('./routes/auth');
 const gameRoutes = require('./routes/games');
 const adminRoutes = require('./routes/admin');
+const profileRoutes = require('./routes/profile');
 
 const app = express();
 
+// Create uploads directories if they don't exist
+const avatarsDir = path.join(__dirname, '../public/uploads/avatars');
+if (!fs.existsSync(avatarsDir)) {
+    fs.mkdirSync(avatarsDir, { recursive: true });
+}
 
 // Middleware
 app.use(cors());
@@ -19,6 +26,7 @@ app.use(express.static('public'));
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)

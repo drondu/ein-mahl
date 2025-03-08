@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-section {
+            text-align: center;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+        }
+
+        .upload-avatar {
+            display: none;
+        }
+
+        .upload-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: #45a049;
+        }
+
+        .profile-main {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .bio-section {
+            margin-bottom: 30px;
+        }
+
+        .bio-section textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            font-size: 14px;
+            resize: vertical;
+            margin-top: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #8e9aaf;
+        }
+
+        .save-btn {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #0b5ed7;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="game.html" class="back-btn">← Back to Games</a>
+        
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <div class="avatar-section">
+                    <img src="" alt="Profile Avatar" class="avatar" id="avatarImg">
+                    <input type="file" id="avatarUpload" class="upload-avatar" accept="image/*">
+                    <label for="avatarUpload" class="upload-btn">Change Avatar</label>
+                </div>
+
+                <div class="joined-date">
+                    Joined: <span id="joinDate">Loading...</span>
+                </div>
+
+                <div class="last-active">
+                    Last Active: <span id="lastActive">Loading...</span>
+                </div>
+            </div>
+
+            <div class="profile-main">
+                <div class="profile-header">
+                    <h1 id="username">Loading...</h1>
+                </div>
+
+                <div class="bio-section">
+                    <h3>Bio</h3>
+                    <textarea id="bioText" placeholder="Write something about yourself..."></textarea>
+                    <button class="save-btn" onclick="saveBio()">Save Bio</button>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Game Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="gamesPlayed">0</div>
+                            <div class="stat-label">Games Played</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="gamesWon">0</div>
+                            <div class="stat-label">Games Won</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="winRate">0%</div>
+                            <div class="stat-label">Win Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="avgGameTime">0</div>
+                            <div class="stat-label">Avg. Game Time (min)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+            }
+            return token;
+        }
+
+        // Load user profile
+        async function loadProfile() {
+            try {
+                const response = await fetch(`${API_URL}/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${checkAuth()}`
+                    }
+                });
+                
+                const user = await response.json();
+                
+                // Update profile info
+                document.getElementById('username').textContent = user.username;
+                document.getElementById('bioText').value = user.bio;
+                document.getElementById('avatarImg').src = user.avatar;
+                document.getElementById('joinDate').textContent = new Date(user.createdAt).toLocaleDateString();
+                document.getElementById('lastActive').textContent = new Date(user.lastActive).toLocaleString();
+
+                // Update stats
+                document.getElementById('gamesPlayed').textContent = user.stats.gamesPlayed;
+                document.getElementById('gamesWon').textContent = user.stats.gamesWon;
+                document.getElementById('winRate').textContent = `${Math.round(user.stats.winRate)}%`;
+                document.getElementById('avgGameTime').textContent = Math.round(user.stats.averageGameTime);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Error loading profile');
+            }
+        }
+
+        // Save bio
+        async function saveBio() {
+            try {
+                const bio = document.getElementById('bioText').value;
+                const response = await fetch(`${API_URL}/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${checkAuth()}`
+                    },
+                    body: JSON.stringify({ bio })
+                });
+
+                if (response.ok) {
+                    alert('Bio updated successfully');
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error updating bio');
+                }
+            } catch (error) {
+                console.error('Error saving bio:', error);
+                alert('Error saving bio');
+            }
+        }
+
+        document.getElementById('avatarUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Convert image to base64
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64Image = event.target.result;
+
+                try {
+                    const response = await fetch(`${API_URL}/profile/avatar`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${checkAuth()}`
+                        },
+                        body: JSON.stringify({ avatar: base64Image })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('avatarImg').src = data.avatar;
+                    } else {
+                        const data = await response.json();
+                        alert(data.message || 'Error uploading avatar');
+                    }
+                } catch (error) {
+                    console.error('Error uploading avatar:', error);
+                    alert('Error uploading avatar');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Initial load
+        loadProfile();
+    </script>
+</body>
+</html>
