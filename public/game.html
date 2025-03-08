@@ -551,10 +551,18 @@
                             ${(!isJoined && (isFull || game.status !== 'waiting')) ? 'disabled' : ''}
                         >
                             ${isJoined ? 'Return to Game' : 
-                              isFull ? 'Game Full' :
                               game.status !== 'waiting' ? 'Game In Progress' : 
+                              isFull ? 'Game Full' :
                               'Join Game'}
                         </button>
+                        ${game.status === 'in_progress' && !isJoined ? 
+                            `<button 
+                                class="button-join" 
+                                onclick="spectateGame('${game._id}')"
+                                style="background: #0d6efd;"
+                            >
+                                Spectate Game
+                            </button>` : ''}
                         ${(game.creator.username === currentUser && game.players.length <= 1) ? 
                             `<button 
                                 class="button-delete" 
@@ -626,6 +634,28 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = 'index.html';
+            }
+        }
+
+        // Spectate game function
+        async function spectateGame(gameId) {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/spectate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    window.location.href = `game-session.html?id=${gameId}`;
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error spectating game');
+                }
+            } catch (error) {
+                console.error('Error spectating game:', error);
+                alert('Error spectating game');
             }
         }
 

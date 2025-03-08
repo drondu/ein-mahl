@@ -99,7 +99,8 @@ router.get('/:id', authenticateUser, async (req, res) => {
         const game = await Game.findById(req.params.id)
             .populate([
                 { path: 'creator', select: 'username' },
-                { path: 'players', select: 'username' }
+                { path: 'players', select: 'username' },
+                { path: 'spectators', select: 'username' }
             ]);
 
         console.log('Found game:', {
@@ -206,6 +207,79 @@ router.post('/:id/leave', authenticateUser, async (req, res) => {
         res.json(game);
     } catch (error) {
         res.status(500).json({ message: 'Error leaving game', error: error.message });
+    }
+});
+
+// Spectate a game
+router.post('/:id/spectate', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id);
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        // Check if user is already a player
+        if (game.players.includes(req.userId)) {
+            return res.status(400).json({ message: 'Players cannot be spectators' });
+        }
+
+        // If user is already spectating, remove them from all games they're spectating
+        await Game.updateMany(
+            { spectators: req.userId },
+            { $pull: { spectators: req.userId } }
+        );
+
+        // Add user to spectators of the requested game
+        game.spectators.push(req.userId);
+        await game.save();
+
+        await game.populate([
+            { path: 'creator', select: 'username' },
+            { path: 'players', select: 'username' },
+            { path: 'spectators', select: 'username' }
+        ]);
+
+        console.log('New spectator joined:', {
+            id: game._id,
+            name: game.name,
+            spectators: game.spectators
+        });
+
+        res.json(game);
+    } catch (error) {
+        res.status(500).json({ message: 'Error spectating game', error: error.message });
+    }
+});
+
+// Leave spectating
+router.post('/:id/leave-spectate', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id);
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        // Remove user from spectators
+        game.spectators = game.spectators.filter(spectatorId => spectatorId.toString() !== req.userId);
+        await game.save();
+
+        await game.populate([
+            { path: 'creator', select: 'username' },
+            { path: 'players', select: 'username' },
+            { path: 'spectators', select: 'username' }
+        ]);
+
+        console.log('Spectator left:', {
+            id: game._id,
+            name: game.name,
+            spectators: game.spectators
+        });
+
+        res.json(game);
+    } catch (error) {
+        res.status(500).json({ message: 'Error leaving spectate mode', error: error.message });
     }
 });
 

@@ -68,21 +68,22 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .players-header h3 {
+        .section-header h3 {
             margin: 0;
             color: #8e9aaf;
             font-size: 16px;
         }
 
-        .players-count {
+        .count-badge {
             font-size: 14px;
             color: #4CAF50;
         }
 
-        .players-list {
+        .user-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            margin-bottom: 20px;
         }
 
         .player-item {
@@ -163,6 +164,26 @@
             text-align: center;
         }
 
+        .button-primary {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .button-primary:hover {
+            background: #0b5ed7;
+        }
+
+        .spectator-indicator {
+            background: #6c757d !important;
+            box-shadow: 0 0 5px rgba(108, 117, 125, 0.5) !important;
+        }
+
     </style>
 </head>
 <body>
@@ -171,22 +192,34 @@
             <div class="session-details">
                 <h1 class="game-title" id="gameName">Loading game...</h1>
                 
-                <div class="player-status" id="playerCount">
-                    Waiting for players (<span class="player-count">0</span>/<span id="maxPlayers">0</span>)
-                </div>
-
                 <div class="players-section">
-                    <div class="players-header">
-                        <h3>Connected Players</h3>
-                        <span class="players-count"><span class="player-count">0</span>/<span id="maxPlayers">0</span></span>
+                    <div class="section-header">
+                        <h3>Players</h3>
+                        <span class="count-badge">
+                            <span class="player-count">0</span>/<span id="maxPlayers">0</span>
+                        </span>
                     </div>
-                    <div class="players-list" id="playersList">
+                    <div class="user-list" id="playersList">
                         <!-- Players will be loaded here -->
+                    </div>
+
+                    <div class="section-header">
+                        <h3>Spectators</h3>
+                        <span class="count-badge"><span id="spectatorCount">0</span></span>
+                    </div>
+                    <div class="user-list" id="spectatorsList">
+                        <!-- Spectators will be loaded here -->
+                    </div>
+
+                    <div id="spectateActions" style="margin-top: 20px;">
+                        <!-- Spectate buttons will be added here -->
                     </div>
                 </div>
 
                 <div class="session-buttons">
-                    <button class="leave-button" onclick="leaveGame()">Leave Game</button>
+                    <div id="gameButtons">
+                        <!-- Leave game button will be added here if user is a player -->
+                    </div>
                 </div>
             </div>
 
@@ -241,14 +274,14 @@
                 console.log('Game data:', game); // Debug log
                 
                 document.getElementById('gameName').textContent = game.name;
-                document.getElementById('maxPlayers').textContent = game.maxPlayers;
-                document.querySelectorAll('.player-count').forEach(el => {
-                    el.textContent = game.players.length;
-                });
+                // Update player counts
+                document.querySelector('#maxPlayers').textContent = game.maxPlayers;
+                document.querySelector('.player-count').textContent = game.players.length;
 
                 // Update players list
                 const playersList = document.getElementById('playersList');
                 console.log('Current players:', game.players.map(p => p.username)); // Debug log
+                // Update players list
                 playersList.innerHTML = game.players.map(player => `
                     <div class="player-item ${player.username === currentUser ? 'current-user' : ''}">
                         <div class="player-info">
@@ -260,14 +293,49 @@
                     </div>
                 `).join('');
 
+                // Update spectators list
+                const spectatorsList = document.getElementById('spectatorsList');
+                const spectatorCount = document.getElementById('spectatorCount');
+                spectatorCount.textContent = game.spectators.length;
+                spectatorsList.innerHTML = game.spectators.map(spectator => `
+                    <div class="player-item">
+                        <div class="player-info">
+                            <div class="player-status-indicator spectator-indicator"></div>
+                            <div>${spectator.username}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update game buttons
+                const gameButtons = document.getElementById('gameButtons');
+                const isPlayer = game.players.some(p => p.username === currentUser);
+                const isSpectator = game.spectators.some(s => s.username === currentUser);
+                
+                if (isPlayer || isSpectator) {
+                    gameButtons.innerHTML = `
+                        <button class="leave-button" onclick="${isPlayer ? 'leaveGame()' : 'leaveSpectating()'}">
+                            ${isPlayer ? 'Leave Game' : 'Leave Spectating'}
+                        </button>
+                    `;
+                } else {
+                    gameButtons.innerHTML = '';
+                }
+
                 // Update waiting message
                 const waitingMessage = document.querySelector('.waiting-message');
                 if (game.players.length >= game.maxPlayers) {
-                    waitingMessage.textContent = 'All players have joined! Game will start soon...';
+                    waitingMessage.textContent = 'Starting game...';
                 } else {
                     waitingMessage.textContent = `Waiting for players to join... (${game.players.length}/${game.maxPlayers})`;
                 }
-                console.log('Waiting message updated:', waitingMessage.textContent); // Debug log
+
+                // Show/hide waiting message based on game status
+                const gameArea = document.querySelector('.game-area');
+                if (game.status === 'in_progress') {
+                    waitingMessage.style.display = 'none';
+                } else {
+                    waitingMessage.style.display = 'block';
+                }
             } catch (error) {
                 console.error('Error loading game details:', error);
             }
@@ -278,6 +346,49 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = 'index.html';
+            }
+        }
+
+        async function spectateGame() {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/spectate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    alert(data.message || 'Error spectating game');
+                    return;
+                }
+
+                loadGameDetails();
+            } catch (error) {
+                console.error('Error spectating game:', error);
+                alert('Error spectating game');
+            }
+        }
+
+        async function leaveSpectating() {
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/leave-spectate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    window.location.href = 'game.html';
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error leaving spectate mode');
+                }
+            } catch (error) {
+                console.error('Error leaving spectate mode:', error);
+                alert('Error leaving spectate mode');
             }
         }
 

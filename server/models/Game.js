@@ -15,6 +15,10 @@ const gameSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
+    spectators: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     status: {
         type: String,
         enum: ['waiting', 'in_progress', 'completed'],
