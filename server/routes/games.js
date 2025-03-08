@@ -24,17 +24,28 @@ router.post('/', authenticateUser, async (req, res) => {
     try {
         const { name, maxPlayers } = req.body;
         
+        // First get the user ID and create game
         const game = new Game({
             name,
             creator: req.userId,
             maxPlayers: maxPlayers || 2,
-            players: [req.userId]
+            players: [req.userId] // Add creator as first player
         });
 
         await game.save();
+        
+        // Populate both creator and players fields
+        await game.populate([
+            { path: 'creator', select: 'username' },
+            { path: 'players', select: 'username' }
+        ]);
 
-        await game.populate('creator', 'username');
-        await game.populate('players', 'username');
+        console.log('Created game:', {
+            id: game._id,
+            name: game.name,
+            creator: game.creator,
+            players: game.players
+        });
 
         res.status(201).json(game);
     } catch (error) {
@@ -82,6 +93,32 @@ router.delete('/:id', authenticateUser, async (req, res) => {
     }
 });
 
+// Get game by ID
+router.get('/:id', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id)
+            .populate([
+                { path: 'creator', select: 'username' },
+                { path: 'players', select: 'username' }
+            ]);
+
+        console.log('Found game:', {
+            id: game?._id,
+            name: game?.name,
+            creator: game?.creator,
+            players: game?.players
+        });
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        res.json(game);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching game', error: error.message });
+    }
+});
+
 // Join a game
 router.post('/:id/join', authenticateUser, async (req, res) => {
     try {
@@ -110,19 +147,65 @@ router.post('/:id/join', authenticateUser, async (req, res) => {
         }
 
         await game.save();
-        await game.populate('players', 'username');
+        await game.populate([
+            { path: 'creator', select: 'username' },
+            { path: 'players', select: 'username' }
+        ]);
 
-        // Log game join
-        await new ActivityLog({
-            user: req.userId,
-            type: 'game_join',
-            gameId: game._id,
-            details: `Joined game: ${game.name}`
-        }).save();
+        console.log('Player joined game:', {
+            id: game._id,
+            name: game.name,
+            players: game.players
+        });
 
         res.json(game);
     } catch (error) {
         res.status(500).json({ message: 'Error joining game', error: error.message });
+    }
+});
+
+// Leave a game
+router.post('/:id/leave', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id);
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        if (!game.players.includes(req.userId)) {
+            return res.status(400).json({ message: 'You are not in this game' });
+        }
+
+        // Remove player from the game
+        game.players = game.players.filter(playerId => playerId.toString() !== req.userId);
+        
+        // If game is empty, delete it
+        if (game.players.length === 0) {
+            await Game.findByIdAndDelete(req.params.id);
+            return res.json({ message: 'Game deleted as last player left' });
+        }
+
+        // If creator leaves, assign new creator
+        if (game.creator.toString() === req.userId && game.players.length > 0) {
+            game.creator = game.players[0];
+        }
+
+        await game.save();
+        await game.populate([
+            { path: 'creator', select: 'username' },
+            { path: 'players', select: 'username' }
+        ]);
+
+        console.log('Player left game:', {
+            id: game._id,
+            name: game.name,
+            remainingPlayers: game.players
+        });
+
+        res.json(game);
+    } catch (error) {
+        res.status(500).json({ message: 'Error leaving game', error: error.message });
     }
 });
 
