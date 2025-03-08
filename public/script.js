@@ -19,11 +19,17 @@ async function handleLogin(event) {
         const data = await response.json();
         
         if (response.ok) {
-            // Store auth token and username
+            // Store auth token, username and admin status
             localStorage.setItem('token', data.token);
             localStorage.setItem('currentUser', data.username);
-            // Redirect to game page
-            window.location.href = 'game.html';
+            localStorage.setItem('isAdmin', data.isAdmin);
+            
+            // Redirect based on user role
+            if (data.isAdmin) {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'game.html';
+            }
         } else {
             alert(data.message || 'Login failed');
         }

@@ -42,6 +42,34 @@ gameSchema.pre('save', function(next) {
     next();
 });
 
+// Static methods for stats and filtering
+gameSchema.statics.getGameStats = async function() {
+    return this.aggregate([
+        {
+            $group: {
+                _id: '$status',
+                count: { $sum: 1 },
+                avgPlayers: { $avg: { $size: '$players' } }
+            }
+        }
+    ]);
+};
+
+gameSchema.statics.getPopularTimes = async function() {
+    return this.aggregate([
+        {
+            $group: {
+                _id: { 
+                    hour: { $hour: '$createdAt' },
+                    status: '$status'
+                },
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { '_id.hour': 1 } }
+    ]);
+};
+
 const Game = mongoose.model('Game', gameSchema);
 
 module.exports = Game;

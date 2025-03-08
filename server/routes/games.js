@@ -112,6 +112,14 @@ router.post('/:id/join', authenticateUser, async (req, res) => {
         await game.save();
         await game.populate('players', 'username');
 
+        // Log game join
+        await new ActivityLog({
+            user: req.userId,
+            type: 'game_join',
+            gameId: game._id,
+            details: `Joined game: ${game.name}`
+        }).save();
+
         res.json(game);
     } catch (error) {
         res.status(500).json({ message: 'Error joining game', error: error.message });

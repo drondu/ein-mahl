@@ -295,6 +295,9 @@
                     </div>
                 </div>
                 <button class="logout-btn" onclick="logout()">Logout</button>
+                <div id="adminButton" style="display: none; margin-top: 10px;">
+                    <a href="admin.html" class="button-primary" style="display: block; text-decoration: none;">Admin Dashboard</a>
+                </div>
             </div>
 
             <div class="top-players-card">
@@ -470,6 +473,10 @@
                 document.getElementById('userInitial').textContent = user.username.charAt(0).toUpperCase();
                 document.getElementById('gamesPlayed').textContent = user.gamesPlayed;
                 document.getElementById('gamesWon').textContent = user.gamesWon;
+
+                // Show/hide admin button based on user role
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                document.getElementById('adminButton').style.display = isAdmin ? 'block' : 'none';
             } catch (error) {
                 console.error('Error loading profile:', error);
             }
