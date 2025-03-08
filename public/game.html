@@ -8,7 +8,7 @@
     <style>
         .page-layout {
             display: grid;
-            grid-template-columns: 1fr 3fr;
+            grid-template-columns: 300px 1fr;
             gap: 30px;
             padding: 40px;
             max-width: 1800px;
@@ -179,7 +179,7 @@
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             overflow-y: auto;
         }
@@ -189,6 +189,21 @@
             border-radius: 10px;
             padding: 20px;
             color: white;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .game-details {
+            flex: 1;
+        }
+
+        .game-actions {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
         }
 
         .game-card h3 {
@@ -554,12 +569,14 @@
                 const isFull = game.players.length >= game.maxPlayers;
                 
                 gameCard.innerHTML = `
-                    <h3>${game.name}</h3>
-                    <div class="game-info">Status: ${game.status}</div>
-                    <div class="game-info">Players: ${game.players.map(p => p.username).join(', ')}</div>
-                    <div class="game-info">Created by: ${game.creator.username}</div>
-                    <div class="game-info">Max Players: ${game.maxPlayers}</div>
-                    <div class="game-buttons">
+                    <div class="game-details">
+                        <h3>${game.name}</h3>
+                        <div class="game-info">Status: ${game.status}</div>
+                        <div class="game-info">Players: ${game.players.map(p => p.username).join(', ')}</div>
+                        <div class="game-info">Created by: ${game.creator.username}</div>
+                        <div class="game-info">Max Players: ${game.maxPlayers}</div>
+                    </div>
+                    <div class="game-actions">
                         <button 
                             class="button-join" 
                             onclick="${isJoined ? 
