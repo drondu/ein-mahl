@@ -23,13 +23,19 @@
             display: grid;
             grid-template-columns: 300px 1fr;
             gap: 20px;
-            min-height: 600px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .session-details {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
+            height: 400px;
             display: flex;
             flex-direction: column;
         }
@@ -41,31 +47,13 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .player-status {
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        .player-count {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-
         .players-section {
             flex: 1;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             padding: 15px;
             margin: 10px 0;
-        }
-
-        .players-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
         }
 
         .section-header h3 {
@@ -96,10 +84,6 @@
             transition: background-color 0.2s;
         }
 
-        .player-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
         .player-info {
             display: flex;
             align-items: center;
@@ -115,44 +99,80 @@
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
         }
 
-        .creator-badge {
-            background: #0d6efd;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .chat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .current-user {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.2);
-        }
-
-        .session-buttons {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .leave-button {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            width: 100%;
         }
 
-        .leave-button:hover {
-            background: #cc0000;
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #8e9aaf;
+            margin-left: 8px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background: #45a049;
         }
 
         .game-area {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
+            height: 720px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -179,50 +199,89 @@
             background: #0b5ed7;
         }
 
+        .leave-button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .leave-button:hover {
+            background: #cc0000;
+        }
+
         .spectator-indicator {
             background: #6c757d !important;
             box-shadow: 0 0 5px rgba(108, 117, 125, 0.5) !important;
         }
 
+        .creator-badge {
+            background: #0d6efd;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .current-user {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="game-content">
-            <div class="session-details">
-                <h1 class="game-title" id="gameName">Loading game...</h1>
-                
-                <div class="players-section">
-                    <div class="section-header">
-                        <h3>Players</h3>
-                        <span class="count-badge">
-                            <span class="player-count">0</span>/<span id="maxPlayers">0</span>
-                        </span>
-                    </div>
-                    <div class="user-list" id="playersList">
-                        <!-- Players will be loaded here -->
+            <div class="left-column">
+                <div class="session-details">
+                    <h1 class="game-title" id="gameName">Loading game...</h1>
+                    <div class="players-section">
+                        <div class="section-header">
+                            <h3>Players</h3>
+                            <span class="count-badge">
+                                <span class="player-count">0</span>/<span id="maxPlayers">0</span>
+                            </span>
+                        </div>
+                        <div class="user-list" id="playersList">
+                            <!-- Players will be loaded here -->
+                        </div>
+
+                        <div class="section-header">
+                            <h3>Spectators</h3>
+                            <span class="count-badge"><span id="spectatorCount">0</span></span>
+                        </div>
+                        <div class="user-list" id="spectatorsList">
+                            <!-- Spectators will be loaded here -->
+                        </div>
                     </div>
 
-                    <div class="section-header">
-                        <h3>Spectators</h3>
-                        <span class="count-badge"><span id="spectatorCount">0</span></span>
-                    </div>
-                    <div class="user-list" id="spectatorsList">
-                        <!-- Spectators will be loaded here -->
-                    </div>
-
-                    <div id="spectateActions" style="margin-top: 20px;">
-                        <!-- Spectate buttons will be added here -->
+                    <div class="session-buttons">
+                        <div id="gameButtons">
+                            <!-- Leave game button will be added here if user is a player -->
+                        </div>
                     </div>
                 </div>
 
-                <div class="session-buttons">
-                    <div id="gameButtons">
-                        <!-- Leave game button will be added here if user is a player -->
+                <div class="chat-box">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="chat-input">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="Type a message..." 
+                            onkeypress="if(event.key === 'Enter') sendMessage()"
+                        />
+                        <button onclick="sendMessage()">Send</button>
                     </div>
                 </div>
             </div>
-
+            
             <div class="game-area">
                 <div class="waiting-message">
                     Waiting for players to join...
@@ -236,7 +295,127 @@
         const gameId = new URLSearchParams(window.location.search).get('id');
         const currentUser = localStorage.getItem('currentUser');
 
-        // Leave game function
+        // Load game details and messages
+        async function loadGameDetails() {
+            try {
+                const [gameResponse, messagesResponse] = await Promise.all([
+                    fetch(`${API_URL}/games/${gameId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }),
+                    fetch(`${API_URL}/games/${gameId}/messages`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                ]);
+
+                const game = await gameResponse.json();
+                const messages = await messagesResponse.json();
+                
+                document.getElementById('gameName').textContent = game.name;
+                document.querySelector('#maxPlayers').textContent = game.maxPlayers;
+                document.querySelector('.player-count').textContent = game.players.length;
+
+                const playersList = document.getElementById('playersList');
+                playersList.innerHTML = game.players.map(player => `
+                    <div class="player-item ${player.username === currentUser ? 'current-user' : ''}">
+                        <div class="player-info">
+                            <div class="player-status-indicator"></div>
+                            <div>${player.username}</div>
+                            ${player.username === game.creator.username ? 
+                                '<span class="creator-badge">Creator</span>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                const spectatorsList = document.getElementById('spectatorsList');
+                const spectatorCount = document.getElementById('spectatorCount');
+                spectatorCount.textContent = game.spectators.length;
+                spectatorsList.innerHTML = game.spectators.map(spectator => `
+                    <div class="player-item">
+                        <div class="player-info">
+                            <div class="player-status-indicator spectator-indicator"></div>
+                            <div>${spectator.username}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                const gameButtons = document.getElementById('gameButtons');
+                const isPlayer = game.players.some(p => p.username === currentUser);
+                const isSpectator = game.spectators.some(s => s.username === currentUser);
+                
+                if (isPlayer || isSpectator) {
+                    gameButtons.innerHTML = `
+                        <button class="leave-button" onclick="${isPlayer ? 'leaveGame()' : 'leaveSpectating()'}">
+                            ${isPlayer ? 'Leave Game' : 'Leave Spectating'}
+                        </button>
+                    `;
+                } else {
+                    gameButtons.innerHTML = '';
+                }
+
+                const waitingMessage = document.querySelector('.waiting-message');
+                if (game.players.length >= game.maxPlayers) {
+                    waitingMessage.textContent = 'Starting game...';
+                } else {
+                    waitingMessage.textContent = `Waiting for players to join... (${game.players.length}/${game.maxPlayers})`;
+                }
+
+                if (game.status === 'in_progress') {
+                    waitingMessage.style.display = 'none';
+                } else {
+                    waitingMessage.style.display = 'block';
+                }
+
+                // Update chat messages
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = messages.map(message => `
+                    <div class="chat-message">
+                        <span class="message-sender">${message.sender.username}</span>
+                        <span class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</span>
+                        <div class="message-text">${message.text}</div>
+                    </div>
+                `).join('');
+                
+                // Auto scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error loading game details:', error);
+            }
+        }
+
+        // Send chat message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            try {
+                const response = await fetch(`${API_URL}/games/${gameId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ text: message })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    await loadGameDetails();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Error sending message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Error sending message');
+            }
+        }
+
         async function leaveGame() {
             if (!confirm('Are you sure you want to leave the game?')) {
                 return;
@@ -259,93 +438,6 @@
             } catch (error) {
                 console.error('Error leaving game:', error);
                 alert('Error leaving game');
-            }
-        }
-
-        // Load game details
-        async function loadGameDetails() {
-            try {
-                const response = await fetch(`${API_URL}/games/${gameId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                const game = await response.json();
-                console.log('Game data:', game); // Debug log
-                
-                document.getElementById('gameName').textContent = game.name;
-                // Update player counts
-                document.querySelector('#maxPlayers').textContent = game.maxPlayers;
-                document.querySelector('.player-count').textContent = game.players.length;
-
-                // Update players list
-                const playersList = document.getElementById('playersList');
-                console.log('Current players:', game.players.map(p => p.username)); // Debug log
-                // Update players list
-                playersList.innerHTML = game.players.map(player => `
-                    <div class="player-item ${player.username === currentUser ? 'current-user' : ''}">
-                        <div class="player-info">
-                            <div class="player-status-indicator"></div>
-                            <div>${player.username}</div>
-                            ${player.username === game.creator.username ? 
-                                '<span class="creator-badge">Creator</span>' : ''}
-                        </div>
-                    </div>
-                `).join('');
-
-                // Update spectators list
-                const spectatorsList = document.getElementById('spectatorsList');
-                const spectatorCount = document.getElementById('spectatorCount');
-                spectatorCount.textContent = game.spectators.length;
-                spectatorsList.innerHTML = game.spectators.map(spectator => `
-                    <div class="player-item">
-                        <div class="player-info">
-                            <div class="player-status-indicator spectator-indicator"></div>
-                            <div>${spectator.username}</div>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Update game buttons
-                const gameButtons = document.getElementById('gameButtons');
-                const isPlayer = game.players.some(p => p.username === currentUser);
-                const isSpectator = game.spectators.some(s => s.username === currentUser);
-                
-                if (isPlayer || isSpectator) {
-                    gameButtons.innerHTML = `
-                        <button class="leave-button" onclick="${isPlayer ? 'leaveGame()' : 'leaveSpectating()'}">
-                            ${isPlayer ? 'Leave Game' : 'Leave Spectating'}
-                        </button>
-                    `;
-                } else {
-                    gameButtons.innerHTML = '';
-                }
-
-                // Update waiting message
-                const waitingMessage = document.querySelector('.waiting-message');
-                if (game.players.length >= game.maxPlayers) {
-                    waitingMessage.textContent = 'Starting game...';
-                } else {
-                    waitingMessage.textContent = `Waiting for players to join... (${game.players.length}/${game.maxPlayers})`;
-                }
-
-                // Show/hide waiting message based on game status
-                const gameArea = document.querySelector('.game-area');
-                if (game.status === 'in_progress') {
-                    waitingMessage.style.display = 'none';
-                } else {
-                    waitingMessage.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error loading game details:', error);
-            }
-        }
-
-        // Check authentication
-        function checkAuth() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'index.html';
             }
         }
 
@@ -392,11 +484,19 @@
             }
         }
 
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+            }
+        }
+
         // Initial load
         checkAuth();
         loadGameDetails();
 
-        // Refresh game details periodically
+        // Refresh game details and messages periodically
         setInterval(loadGameDetails, 2000);
     </script>
 </body>

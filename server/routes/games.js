@@ -283,4 +283,52 @@ router.post('/:id/leave-spectate', authenticateUser, async (req, res) => {
     }
 });
 
+// Send message in game chat
+router.post('/:id/messages', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id);
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        // Check if user is player or spectator
+        if (!game.players.includes(req.userId) && !game.spectators.includes(req.userId)) {
+            return res.status(403).json({ message: 'You must be a player or spectator to send messages' });
+        }
+
+        const message = {
+            sender: req.userId,
+            text: req.body.text
+        };
+
+        game.messages.push(message);
+        await game.save();
+
+        // Populate sender info for the new message
+        await game.populate('messages.sender', 'username');
+
+        const newMessage = game.messages[game.messages.length - 1];
+        res.json(newMessage);
+    } catch (error) {
+        res.status(500).json({ message: 'Error sending message', error: error.message });
+    }
+});
+
+// Get game messages
+router.get('/:id/messages', authenticateUser, async (req, res) => {
+    try {
+        const game = await Game.findById(req.params.id)
+            .populate('messages.sender', 'username');
+        
+        if (!game) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        res.json(game.messages);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching messages', error: error.message });
+    }
+});
+
 module.exports = router;

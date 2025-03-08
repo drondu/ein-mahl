@@ -30,6 +30,21 @@ const gameSchema = new mongoose.Schema({
         min: 2,
         max: 4
     },
+    messages: [{
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     createdAt: {
         type: Date,
         default: Date.now
