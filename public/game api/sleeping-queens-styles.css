@@ -1,0 +1,317 @@
+/* Sleeping Queens Game Styles */
+
+.queens-game {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    gap: 20px;
+}
+
+.sleeping-queens-area {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.sleeping-queens-area h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #FFD700;
+}
+
+.queens-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.draw-discard-pile {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 20px 0;
+}
+
+.pile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.pile-label {
+    font-size: 14px;
+    color: #cccccc;
+}
+
+.players-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.player-section {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    border: 2px solid transparent;
+}
+
+.player-section.current-player {
+    border-color: #4CAF50;
+}
+
+.player-section.player-turn {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.player-info {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.player-score {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+.player-queens, .player-hand {
+    margin-bottom: 15px;
+}
+
+.player-queens h4, .player-hand h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #8e9aaf;
+    font-size: 14px;
+}
+
+.awake-queens-container, .hand-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    width: 70px;
+    height: 100px;
+    border-radius: 8px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card-back {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.queen-card {
+    background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 100%);
+    color: #fff;
+}
+
+.hand-card {
+    background: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+    color: #fff;
+}
+
+.hand-card.selected {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    border: 2px solid #FFD700;
+}
+
+.card-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.queen-name {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.queen-points {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    color: #FFD700;
+}
+
+.card-type {
+    font-size: 12px;
+    text-align: center;
+}
+
+.card-value {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.no-queens {
+    font-style: italic;
+    color: #8e9aaf;
+    font-size: 12px;
+    padding: 10px;
+    text-align: center;
+}
+
+.game-controls {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.game-status {
+    font-size: 16px;
+}
+
+.your-turn {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.waiting-turn {
+    color: #FFA500;
+}
+
+.error-msg {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.play-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.play-button:hover:not(:disabled) {
+    background: #45a049;
+}
+
+.play-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.loading-game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 24px;
+    color: white;
+}
+
+.game-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 20px;
+    color: #ff4444;
+}
+
+/* Card animations */
+.waking-queen {
+    animation: wake-animation 1s ease-in-out;
+}
+
+@keyframes wake-animation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.card-deal {
+    animation: deal-animation 0.5s ease-out;
+}
+
+@keyframes deal-animation {
+    0% { 
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    100% { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        width: 60px;
+        height: 85px;
+    }
+    
+    .card-type {
+        font-size: 10px;
+    }
+    
+    .card-value {
+        font-size: 20px;
+    }
+    
+    .queen-name {
+        font-size: 10px;
+    }
+    
+    .queen-points {
+        font-size: 12px;
+    }
+}
