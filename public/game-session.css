@@ -38,6 +38,8 @@ body {
     font-size: 24px;
     padding-bottom: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffb347; /* Golden color for the title to represent royal theme */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .players-section {
@@ -200,13 +202,14 @@ body {
         radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
     background-size: 550px 550px, 350px 350px, 250px 250px;
     background-position: 0 0, 40px 60px, 130px 270px;
-    animation: starTwinkle 15s linear infinite;
-    opacity: 0.2;
+    animation: starTwinkle 4s ease-in-out infinite;
+    opacity: 0.3;
 }
 
 @keyframes starTwinkle {
-    from { transform: translateY(0); }
-    to { transform: translateY(-550px); }
+    0% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0.2; }
 }
 
 .game-board {
@@ -245,11 +248,12 @@ body {
     position: relative;
     cursor: pointer;
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .queen-slot:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 217, 102, 0.5); /* Add glow effect on hover */
 }
 
 .queen-slot::before {
@@ -262,8 +266,8 @@ body {
     background-image: url('./cards/card_back.jpg');
     background-size: cover;
     background-position: center;
-    opacity: 1;
-    filter: hue-rotate(120deg);
+    opacity: 0.8;
+    filter: hue-rotate(220deg); /* Adjust to purple/blue for sleeping theme */
 }
 
 .draw-pile {
@@ -372,7 +376,7 @@ body {
     padding: 20px 40px;
     border-radius: 15px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 217, 102, 0.2);
     z-index: 10;
 }
 
@@ -430,7 +434,7 @@ body {
 .current-user .user-bag {
     position: absolute;
     margin-left: -150px;
-    margin-top: -10px;
+    margin-top: -15px; /* Changed from -10px to -15px to move the bag 5px higher */
 }
 
 .user-bag:hover {
@@ -549,8 +553,18 @@ body {
 .captured-queens-popup .empty-message {
     color: rgba(255, 255, 255, 0.8);
     text-align: center;
-    padding: 5px;
+    padding: 10px;
     font-size: 13px;
+    font-style: italic;
+}
+
+.captured-queens-title {
+    color: #ffb347;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .captured-queen-card {

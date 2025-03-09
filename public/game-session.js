@@ -1,5 +1,5 @@
 /**
- * Extracted script content from game-session.html
+ * Sleeping Queens Game Session
  */
 
 const API_URL = 'http://localhost:3000/api';
@@ -7,6 +7,7 @@ const gameId = new URLSearchParams(window.location.search).get('id');
 const currentUser = localStorage.getItem('currentUser');
 const DEFAULT_AVATAR = './uploads/avatars/pancake_king.jpeg';
 const FALLBACK_AVATAR = './uploads/avatars/default.png';
+const GAME_NAME = 'Sleeping Queens';
 
 function getAvatarUrl(avatarPath) {
     const img = new Image();
@@ -240,7 +241,7 @@ function showCapturedQueens(event, capturedQueens) {
     const title = popup.querySelector('.captured-queens-title');
     const content = popup.querySelector('.captured-queens-content');
     const playerName = event.target.closest('.player-info-box').querySelector('.player-name').textContent;
-    title.textContent = `${playerName}'s Treasure`;
+    title.textContent = `${playerName}'s Awakened Queens`;
 
     // Update content with captured queens
     if (capturedQueens && capturedQueens.length > 0) {
@@ -273,11 +274,11 @@ function showCapturedQueens(event, capturedQueens) {
 
     // Position popup
     if (showBelow) {
-        popup.style.top = (bagTop + bagRect.height + 5) + 'px';
+        popup.style.top = (bagTop + bagRect.height + 23) + 'px';
         popup.classList.add('show-below');
         popup.classList.remove('show-above');
     } else {
-        popup.style.top = (bagTop - popupRect.height - 5) + 'px';
+        popup.style.top = (bagTop - popupRect.height - 23) + 'px';
         popup.classList.add('show-above');
         popup.classList.remove('show-below');
     }
@@ -327,7 +328,7 @@ function updateGameBoard(game) {
                         <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
                         <div class="player-name">${opponent.username}</div>
                     </div>
-                    <img src="./bag.png" alt="Bag" class="user-bag" 
+                    <img src="./bag.png" alt="Queen Collection" class="user-bag" 
                          onmouseover="showCapturedQueens(event, ${JSON.stringify(opponent.capturedQueens || [])})"
                          onmouseout="hideCapturedQueens()">
                 </div>
@@ -364,7 +365,7 @@ function updateGameBoard(game) {
                             <img src="${getAvatarUrl(currentPlayer.avatar)}" alt="${currentPlayer.username}" class="player-avatar">
                             <div class="player-name">${currentPlayer.username}</div>
                         </div>
-                        <img src="./bag.png" alt="Bag" class="user-bag" 
+                        <img src="./bag.png" alt="Queen Collection" class="user-bag" 
                              onmouseover="showCapturedQueens(event, ${JSON.stringify(currentPlayer.capturedQueens || [])})"
                              onmouseout="hideCapturedQueens()">
                     </div>
@@ -386,8 +387,8 @@ function selectCard(cardElement) {
     cardElement.classList.toggle('selected');
 }
 
-// Draw card functionality (stub)
+// Draw card functionality
 function drawCard() {
-    // TODO: Implement card drawing logic
-    console.log('Drawing card...');
+    console.log('Drawing card from the Sleeping Queens deck...');
+    // TODO: Implement card drawing logic to wake up sleeping queens
 }
