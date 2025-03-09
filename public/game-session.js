@@ -233,16 +233,27 @@ function showCapturedQueens(event, capturedQueens) {
         popup = document.createElement('div');
         popup.id = 'capturedQueensPopup';
         popup.className = 'captured-queens-popup';
-        popup.innerHTML = '<div class="captured-queens-content"></div>';
+        popup.innerHTML = '<div class="captured-queens-title"></div><div class="captured-queens-content"></div>';
         gameBoard.appendChild(popup);
     }
 
+    const title = popup.querySelector('.captured-queens-title');
     const content = popup.querySelector('.captured-queens-content');
+    const playerName = event.target.closest('.player-info-box').querySelector('.player-name').textContent;
+    title.textContent = `${playerName}'s Treasure`;
 
     // Update content with captured queens
-    content.innerHTML = capturedQueens.map(queen => `
-        <div class="captured-queen-card" style="background-image: url('./cards/${queen}.jpeg')"></div>
-    `).join('') || '<div class="empty-message">No queens captured yet</div>';
+    if (capturedQueens && capturedQueens.length > 0) {
+        content.innerHTML = capturedQueens.map(queen => `
+            <div class="captured-queen-card" style="background-image: url('./cards/${queen}.jpeg')"></div>
+        `).join('');
+        content.style.justifyContent = 'start'; // Reset to default grid layout
+    } else {
+        // Show queen holder image when no queens are captured, centered
+        content.innerHTML = '<div class="captured-queen-card" style="background-image: url(\'./cards/queen_holder.png\')"></div>';
+        content.style.display = 'flex';
+        content.style.justifyContent = 'center';
+    }
 
     // Show popup temporarily to get its dimensions
     popup.style.visibility = 'hidden';
@@ -311,13 +322,15 @@ function updateGameBoard(game) {
     opponentArea.innerHTML = `
         ${opponent ? `
             <div class="player-info-box ${opponent.isCurrentTurn ? 'active' : ''}">
-                <div style="display: flex; align-items: center;">
-                    <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
+                        <div class="player-name">${opponent.username}</div>
+                    </div>
                     <img src="./bag.png" alt="Bag" class="user-bag" 
                          onmouseover="showCapturedQueens(event, ${JSON.stringify(opponent.capturedQueens || [])})"
                          onmouseout="hideCapturedQueens()">
                 </div>
-                <div class="player-name">${opponent.username}</div>
             </div>
         ` : ''}
         <div class="deck-area">
@@ -346,13 +359,15 @@ function updateGameBoard(game) {
         ${
             currentPlayer ? `
                 <div class="player-info-box ${currentPlayer.isCurrentTurn ? 'active' : ''} current-user">
-                    <div style="display: flex; align-items: center;">
-                        <img src="${getAvatarUrl(currentPlayer.avatar)}" alt="${currentPlayer.username}" class="player-avatar">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="${getAvatarUrl(currentPlayer.avatar)}" alt="${currentPlayer.username}" class="player-avatar">
+                            <div class="player-name">${currentPlayer.username}</div>
+                        </div>
                         <img src="./bag.png" alt="Bag" class="user-bag" 
                              onmouseover="showCapturedQueens(event, ${JSON.stringify(currentPlayer.capturedQueens || [])})"
                              onmouseout="hideCapturedQueens()">
                     </div>
-                    <div class="player-name">${currentPlayer.username}</div>
                 </div>
             ` : ''
         }

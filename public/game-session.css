@@ -419,8 +419,8 @@ body {
 }
 
 .user-bag {
-    width: 72px;
-    height: 72px;
+    width: 135px;
+    height: 135px;
     cursor: pointer;
     transition: transform 0.2s;
     z-index: 2;
@@ -428,8 +428,6 @@ body {
 }
 
 .current-user .user-bag {
-    width: 135px;
-    height: 135px;
     position: absolute;
     margin-left: -150px;
     margin-top: -10px;
