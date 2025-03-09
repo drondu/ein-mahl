@@ -71,13 +71,6 @@ body {
     font-weight: normal;
 }
 
-.user-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
 .player-item {
     display: flex;
     align-items: center;
@@ -191,7 +184,7 @@ body {
     flex-direction: column;
     position: relative;
     box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+    overflow: visible !important;
 }
 
 .game-area::before {
@@ -223,6 +216,7 @@ body {
     justify-content: space-between;
     padding: 15px 5px;
     position: relative;
+    overflow: visible !important;
 }
 
 .deck-area {
@@ -425,12 +419,18 @@ body {
 }
 
 .user-bag {
-    position: absolute;
-    width: 135px;
-    height: 135px;
+    width: 72px;
+    height: 72px;
     cursor: pointer;
     transition: transform 0.2s;
     z-index: 2;
+    margin-left: 10px;
+}
+
+.current-user .user-bag {
+    width: 135px;
+    height: 135px;
+    position: absolute;
     margin-left: -150px;
     margin-top: -10px;
 }
@@ -498,4 +498,73 @@ body {
 .card.selected {
     border-color: #4CAF50;
     transform: translateY(-10px);
+}
+
+.captured-queens-popup {
+    display: none;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 200px;
+    pointer-events: none;
+}
+
+.captured-queens-popup.show-above::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.captured-queens-popup.show-below::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(255, 255, 255, 0.1) transparent;
+    filter: drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.captured-queens-popup.visible {
+    display: block !important;
+}
+
+.captured-queens-content {
+    display: grid;
+    grid-template-columns: repeat(3, 66px);
+    gap: 5px;
+}
+
+.captured-queens-popup .empty-message {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.captured-queen-card {
+    width: 66px;
+    height: 99px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s;
+}
+
+.captured-queen-card:hover {
+    transform: scale(1.1);
 }

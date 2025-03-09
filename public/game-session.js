@@ -223,7 +223,76 @@ loadGameDetails();
 // Refresh game details and messages periodically
 setInterval(loadGameDetails, 2000);
 
-// Update game board display based on game status
+// Show captured queens popup
+function showCapturedQueens(event, capturedQueens) {
+    let popup = document.getElementById('capturedQueensPopup');
+    const gameBoard = document.querySelector('.game-board');
+
+    // Create popup if it doesn't exist
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'capturedQueensPopup';
+        popup.className = 'captured-queens-popup';
+        popup.innerHTML = '<div class="captured-queens-content"></div>';
+        gameBoard.appendChild(popup);
+    }
+
+    const content = popup.querySelector('.captured-queens-content');
+
+    // Update content with captured queens
+    content.innerHTML = capturedQueens.map(queen => `
+        <div class="captured-queen-card" style="background-image: url('./cards/${queen}.jpeg')"></div>
+    `).join('') || '<div class="empty-message">No queens captured yet</div>';
+
+    // Show popup temporarily to get its dimensions
+    popup.style.visibility = 'hidden';
+    popup.style.display = 'block';
+    
+    // Get the dimensions and positions
+    const bagRect = event.target.getBoundingClientRect();
+    const boardRect = gameBoard.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+    
+    // Calculate relative position within the game board
+    const bagTop = bagRect.top - boardRect.top;
+    const bagLeft = bagRect.left - boardRect.left;
+    
+    // Check if we should show popup above or below the bag (inverted logic)
+    const showBelow = bagTop < boardRect.height / 2;
+
+    // Position popup
+    if (showBelow) {
+        popup.style.top = (bagTop + bagRect.height + 5) + 'px';
+        popup.classList.add('show-below');
+        popup.classList.remove('show-above');
+    } else {
+        popup.style.top = (bagTop - popupRect.height - 5) + 'px';
+        popup.classList.add('show-above');
+        popup.classList.remove('show-below');
+    }
+
+    // Center horizontally
+    popup.style.left = (bagLeft + (bagRect.width / 2) - (popupRect.width / 2)) + 'px';
+    
+    // Make popup visible
+    popup.style.visibility = 'visible';
+    popup.style.display = 'none';
+    popup.classList.add('visible');
+}
+
+// Hide captured queens popup
+function hideCapturedQueens() {
+    const popup = document.getElementById('capturedQueensPopup');
+    if (popup) {
+        popup.classList.remove('visible');
+        // Remove after animation
+        setTimeout(() => {
+            popup.remove();
+        }, 200);
+    }
+}
+
+// Update game board with hover functionality
 function updateGameBoard(game) {
     const gameBoard = document.querySelector('.game-board');
     const waitingMessage = document.querySelector('.waiting-message');
@@ -242,7 +311,12 @@ function updateGameBoard(game) {
     opponentArea.innerHTML = `
         ${opponent ? `
             <div class="player-info-box ${opponent.isCurrentTurn ? 'active' : ''}">
-                <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
+                <div style="display: flex; align-items: center;">
+                    <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
+                    <img src="./bag.png" alt="Bag" class="user-bag" 
+                         onmouseover="showCapturedQueens(event, ${JSON.stringify(opponent.capturedQueens || [])})"
+                         onmouseout="hideCapturedQueens()">
+                </div>
                 <div class="player-name">${opponent.username}</div>
             </div>
         ` : ''}
@@ -274,7 +348,9 @@ function updateGameBoard(game) {
                 <div class="player-info-box ${currentPlayer.isCurrentTurn ? 'active' : ''} current-user">
                     <div style="display: flex; align-items: center;">
                         <img src="${getAvatarUrl(currentPlayer.avatar)}" alt="${currentPlayer.username}" class="player-avatar">
-                        <img src="./bag.png" alt="Bag" class="user-bag" onclick="openBag()">
+                        <img src="./bag.png" alt="Bag" class="user-bag" 
+                             onmouseover="showCapturedQueens(event, ${JSON.stringify(currentPlayer.capturedQueens || [])})"
+                             onmouseout="hideCapturedQueens()">
                     </div>
                     <div class="player-name">${currentPlayer.username}</div>
                 </div>
@@ -288,21 +364,15 @@ function updateGameBoard(game) {
     } else {
         waitingMessage.style.display = 'block';
     }
+}
 
-    // Add card selection functionality
-    function selectCard(cardElement) {
-        cardElement.classList.toggle('selected');
-    }
+// Card selection functionality
+function selectCard(cardElement) {
+    cardElement.classList.toggle('selected');
 }
 
 // Draw card functionality (stub)
 function drawCard() {
     // TODO: Implement card drawing logic
     console.log('Drawing card...');
-}
-
-// Open bag functionality (stub)
-function openBag() {
-    // TODO: Implement bag opening logic
-    console.log('Opening bag...');
 }
