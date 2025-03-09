@@ -440,29 +440,29 @@
             transition: transform 0.2s;
             z-index: 2;
             margin-left: -150px;
-            margin-top: -30px;
+            margin-top: -10px;
         }
 
-        .user-bag-container {
-            position: relative;
-            display: inline-block;
+        .user-bag:hover {
+            transform: scale(1.1);
         }
 
-        .captured-queens-popup {
+        .hand-deck {
             position: absolute;
-            left: -180px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            min-width: 150px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 3;
+            bottom: 96px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            width: 66px;
+            height: 99px;
+            background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             cursor: pointer;
