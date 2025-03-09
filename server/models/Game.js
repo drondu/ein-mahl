@@ -74,7 +74,7 @@ gameSchema.statics.getGameStats = async function() {
     ]);
 };
 
-gameSchema.statics.getPopularTimes = async function() {
+gameSchema.statics.getPopularTimes = async funkwction() {
     return this.aggregate([
         {
             $group: {
