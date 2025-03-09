@@ -1,0 +1,39 @@
+Object of the Game
+
+* Be the first player to collect either:
+    * 5 queens or 50 points in a 2-3 player game.
+    * 4 queens or 40 points in a 4-5 player game.
+    * Have the most points if all queens have been awakened.
+
+Setup
+
+1. Familiarize: Look through the deck to see the different cards and point values of the queens.
+2. Separate Decks: Make two decks, one with the queen cards (green backs) and one with the other cards (red backs).
+3. Queens Asleep: Shuffle the queen cards and place them face down (asleep) in the center of the playing area in four rows of three.
+4. Deal Cards: Shuffle the red-backed deck and deal five cards to each player.
+5. Draw Pile: Place the remaining red-backed cards face down in a draw pile in the center of the queens.
+6. Discard Pile: Players will discard cards onto a face-up pile next to the draw pile.
+
+How to Play
+
+1. Turns: Players take turns, starting with the player to the left of the dealer, and proceeding clockwise.
+2. Actions: On your turn, you must take ONE of the following actions:
+
+* Play a King: Place the king face up on the discard pile. Pick any queen from the center area and place it face up in front of you. It is now “awake”. If you pick the Rose Queen, you get to wake up an additional Sleeping Queen!
+* Play a Knight: Place the knight onto the discard pile. Select any one of your opponents' queens and place it face up in front of you. Your opponent can stop your knight by immediately playing a Dragon card from her hand. Discard both Dragon and Knight cards, and each player picks a card from the draw pile. This does not count as a turn for the Dragon card player. Play continues to the left of the Knight card player.
+* Play a Sleeping Potion: Place the Sleeping Potion card on the discard pile. Select one of your opponents' queens and put it face down in any open space among the other Sleeping Queens. (Try to remember the queen's point value and where it is placed.) Your opponent can defend against a Sleeping Potion by immediately playing a Wand card from her hand. Discard both Wand and Sleeping Potion cards, and each player picks a card from the draw pile. This does not count as a turn for the Wand card player. Play continues to the left of the Sleeping Potion card player.
+* Play a Jester: Place the Jester card face up on the discard pile. Turn the top draw pile card face up. If it is a power card (King, Knight, Dragon, Potion, Wand, Jester), add it to your hand and take another turn. If it is a number card, starting with you and continuing to the left, count off the number of players equal to the number on the card. The last player counted gets to awaken and keep a queen from the center!
+* Discard Cards: There are three ways to discard cards:
+    1. Discard a single card of any kind and draw one card.
+    2. Discard a pair of identical number cards and draw two cards.
+    3. Discard three or more number cards that make an addition equation and draw that many cards. (For example, discard 2, 3, and 5 since 2+3=5, or discard 2, 3, 4, and 9 since 2+3+4=9)
+
+Special Queen Powers
+
+* The Rose Queen: If you wake up the Rose Queen, you can immediately wake up another queen.
+* The Cat Queen and Dog Queen: You cannot hold both the Cat Queen and the Dog Queen at the same time. If you have one and wake up the other, you must put it back face down and end your turn.
+
+Ending the Game
+
+* Points or Queens: The first player to collect 5 queens or 50 points worth of queens in a 2-3 player game, or 4 queens or 40 points worth of queens in a 4-5 player game, wins.
+* No More Queens: If there are no more Sleeping Queens left in the center, the player with the most points wins.
