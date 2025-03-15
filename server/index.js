@@ -11,16 +11,10 @@ const profileRoutes = require('./routes/profile');
 
 const app = express();
 
-// Create uploads directories if they don't exist
-const avatarsDir = path.join(__dirname, '../public/uploads/avatars');
-if (!fs.existsSync(avatarsDir)) {
-    fs.mkdirSync(avatarsDir, { recursive: true });
-}
-
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Routes
 app.use('/api/auth', authRoutes);

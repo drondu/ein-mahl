@@ -5,8 +5,8 @@
 const API_URL = 'http://localhost:3000/api';
 const gameId = new URLSearchParams(window.location.search).get('id');
 const currentUser = localStorage.getItem('currentUser');
-const DEFAULT_AVATAR = './uploads/avatars/pancake_king.jpeg';
-const FALLBACK_AVATAR = './uploads/avatars/default.png';
+const DEFAULT_AVATAR = '/uploads/avatars/pancake_king.jpeg';
+const FALLBACK_AVATAR = '/uploads/avatars/default.png';
 const GAME_NAME = 'Sleeping Queens';
 
 function getAvatarUrl(avatarPath) {
@@ -155,7 +155,7 @@ async function leaveGame() {
         });
 
         if (response.ok) {
-            window.location.href = 'game.html';
+            window.location.href = '/waiting_room/game.html';
         } else {
             const data = await response.json();
             alert(data.message || 'Error leaving game');
@@ -198,7 +198,7 @@ async function leaveSpectating() {
         });
 
         if (response.ok) {
-            window.location.href = 'game.html';
+            window.location.href = '/waiting_room/game.html';
         } else {
             const data = await response.json();
             alert(data.message || 'Error leaving spectate mode');
@@ -213,7 +213,7 @@ async function leaveSpectating() {
 function checkAuth() {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = 'index.html';
+            window.location.href = '/main_page/index.html';
     }
 }
 
@@ -246,12 +246,12 @@ function showCapturedQueens(event, capturedQueens) {
     // Update content with captured queens
     if (capturedQueens && capturedQueens.length > 0) {
         content.innerHTML = capturedQueens.map(queen => `
-            <div class="captured-queen-card" style="background-image: url('./cards/${queen}.jpeg')"></div>
+            <div class="captured-queen-card" style="background-image: url('/cards/${queen}.jpeg')"></div>
         `).join('');
         content.style.justifyContent = 'start'; // Reset to default grid layout
     } else {
         // Show queen holder image when no queens are captured, centered
-        content.innerHTML = '<div class="captured-queen-card" style="background-image: url(\'./cards/queen_holder.png\')"></div>';
+        content.innerHTML = '<div class="captured-queen-card" style="background-image: url(\'/cards/queen_holder.png\')"></div>';
         content.style.display = 'flex';
         content.style.justifyContent = 'center';
     }
@@ -328,7 +328,7 @@ function updateGameBoard(game) {
                         <img src="${getAvatarUrl(opponent.avatar)}" alt="${opponent.username}" class="player-avatar">
                         <div class="player-name">${opponent.username}</div>
                     </div>
-                    <img src="./bag.png" alt="Queen Collection" class="user-bag" 
+                    <img src="/uploads/bag.png" alt="Queen Collection" class="user-bag" 
                          onmouseover="showCapturedQueens(event, ${JSON.stringify(opponent.capturedQueens || [])})"
                          onmouseout="hideCapturedQueens()">
                 </div>
@@ -353,7 +353,7 @@ function updateGameBoard(game) {
                     </div>
                 `).join('')
                 : `<div class="card placeholder">
-                        <img src="./cards/card_back.jpg" alt="Card Back">
+                        <img src="/cards/card_back.jpg" alt="Card Back">
                    </div>`
             }
         </div>
@@ -365,7 +365,7 @@ function updateGameBoard(game) {
                             <img src="${getAvatarUrl(currentPlayer.avatar)}" alt="${currentPlayer.username}" class="player-avatar">
                             <div class="player-name">${currentPlayer.username}</div>
                         </div>
-                        <img src="./bag.png" alt="Queen Collection" class="user-bag" 
+                    <img src="/uploads/bag.png" alt="Queen Collection" class="user-bag" 
                              onmouseover="showCapturedQueens(event, ${JSON.stringify(currentPlayer.capturedQueens || [])})"
                              onmouseout="hideCapturedQueens()">
                     </div>
