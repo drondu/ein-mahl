@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+import CONFIG from '../config.js';
 
 // Handle the login form submission
 async function handleLogin(event) {
@@ -8,7 +8,7 @@ async function handleLogin(event) {
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`${CONFIG.API_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,9 +26,9 @@ async function handleLogin(event) {
             
             // Redirect based on user role
             if (data.isAdmin) {
-                window.location.href = 'admin.html';
+                window.location.href = '/admin/admin.html';
             } else {
-                window.location.href = 'game.html';
+                window.location.href = '/waiting_room/game.html';
             }
         } else {
             alert(data.message || 'Login failed');
@@ -47,7 +47,7 @@ async function handleRegister(event) {
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch(`${API_URL}/auth/register`, {
+        const response = await fetch(`${CONFIG.API_URL}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -61,8 +61,6 @@ async function handleRegister(event) {
             alert('Registration successful! Please log in.');
             // Switch back to login form
             toggleRegister();
-            // Reset form to login behavior
-            document.getElementById('loginForm').onsubmit = handleLogin;
         } else {
             alert(data.message || 'Registration failed');
         }
@@ -76,39 +74,51 @@ async function handleRegister(event) {
 function toggleRegister() {
     const loginForm = document.getElementById('loginForm');
     const h1 = document.querySelector('h1');
+    const registerLink = document.querySelector('.register-link');
     
     if (loginForm.dataset.mode === 'register') {
         // Switch back to login
         h1.textContent = 'Welcome to Card Game';
         loginForm.querySelector('button').textContent = 'Login';
-        document.querySelector('.register-link').innerHTML = 
-            'Don\'t have an account? <a href="#" onclick="toggleRegister()">Register</a>';
+        registerLink.innerHTML = 'Don\'t have an account? <a href="#" class="register-toggle">Register</a>';
         loginForm.dataset.mode = 'login';
-        loginForm.onsubmit = handleLogin;
+        loginForm.removeEventListener('submit', handleRegister);
+        loginForm.addEventListener('submit', handleLogin);
     } else {
         // Switch to register
         h1.textContent = 'Create Account';
         loginForm.querySelector('button').textContent = 'Register';
-        document.querySelector('.register-link').innerHTML = 
-            'Already have an account? <a href="#" onclick="toggleRegister()">Login</a>';
+        registerLink.innerHTML = 'Already have an account? <a href="#" class="register-toggle">Login</a>';
         loginForm.dataset.mode = 'register';
-        loginForm.onsubmit = handleRegister;
+        loginForm.removeEventListener('submit', handleLogin);
+        loginForm.addEventListener('submit', handleRegister);
     }
+    
+    // Re-attach click event to the new toggle link
+    document.querySelector('.register-toggle').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleRegister();
+    });
 }
 
-// Initialize the form
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize event listeners and form state
+function initializeApp() {
     const loginForm = document.getElementById('loginForm');
-    loginForm.dataset.mode = 'login';
-});
+    const registerToggle = document.querySelector('.register-toggle');
 
-// Check if user is already logged in
-function checkAuthStatus() {
+    loginForm.dataset.mode = 'login';
+    loginForm.addEventListener('submit', handleLogin);
+    registerToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleRegister();
+    });
+
+    // Check if user is already logged in
     const token = localStorage.getItem('token');
     if (token && window.location.pathname === '/index.html') {
-        window.location.href = 'game.html';
+        window.location.href = '/waiting_room/game.html';
     }
 }
 
-// Run auth check when page loads
-checkAuthStatus();
+// Run initialization when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeApp);

@@ -10,7 +10,7 @@
     <div class="container">
         <div class="login-card">
             <h1>Welcome to Card Game</h1>
-            <form id="loginForm" onsubmit="return handleLogin(event)">
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required>
@@ -21,9 +21,9 @@
                 </div>
                 <button type="submit">Login</button>
             </form>
-            <p class="register-link">Don't have an account? <a href="#" onclick="toggleRegister()">Register</a></p>
+            <p class="register-link">Don't have an account? <a href="#" class="register-toggle">Register</a></p>
         </div>
     </div>
-    <script src="/main_page/script.js"></script>
+    <script type="module" src="/main_page/script.js"></script>
 </body>
 </html>

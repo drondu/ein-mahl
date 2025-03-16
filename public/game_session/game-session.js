@@ -2,29 +2,28 @@
  * Sleeping Queens Game Session
  */
 
-const API_URL = 'http://localhost:3000/api';
+import CONFIG from '../config.js';
+
 const gameId = new URLSearchParams(window.location.search).get('id');
 const currentUser = localStorage.getItem('currentUser');
-const DEFAULT_AVATAR = '/uploads/avatars/pancake_king.jpeg';
-const FALLBACK_AVATAR = '/uploads/avatars/default.png';
 const GAME_NAME = 'Sleeping Queens';
 
 function getAvatarUrl(avatarPath) {
     const img = new Image();
     img.src = avatarPath;
-    return avatarPath || DEFAULT_AVATAR || FALLBACK_AVATAR;
+    return avatarPath || CONFIG.DEFAULT_AVATAR || CONFIG.FALLBACK_AVATAR;
 }
 
 // Load game details and messages
 async function loadGameDetails() {
     try {
         const [gameResponse, messagesResponse] = await Promise.all([
-            fetch(`${API_URL}/games/${gameId}`, {
+            fetch(`${CONFIG.API_URL}/games/${gameId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }),
-            fetch(`${API_URL}/games/${gameId}/messages`, {
+            fetch(`${CONFIG.API_URL}/games/${gameId}/messages`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -119,7 +118,7 @@ async function sendMessage() {
     if (!message) return;
 
     try {
-        const response = await fetch(`${API_URL}/games/${gameId}/messages`, {
+        const response = await fetch(`${CONFIG.API_URL}/games/${gameId}/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -147,7 +146,7 @@ async function leaveGame() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/games/${gameId}/leave`, {
+        const response = await fetch(`${CONFIG.API_URL}/games/${gameId}/leave`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -168,7 +167,7 @@ async function leaveGame() {
 
 async function spectateGame() {
     try {
-        const response = await fetch(`${API_URL}/games/${gameId}/spectate`, {
+        const response = await fetch(`${CONFIG.API_URL}/games/${gameId}/spectate`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -190,7 +189,7 @@ async function spectateGame() {
 
 async function leaveSpectating() {
     try {
-        const response = await fetch(`${API_URL}/games/${gameId}/leave-spectate`, {
+        const response = await fetch(`${CONFIG.API_URL}/games/${gameId}/leave-spectate`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

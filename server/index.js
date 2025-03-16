@@ -16,11 +16,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/profile', profileRoutes);
+
+// Frontend Routes
+app.get('/', (req, res) => {
+    res.redirect('/main_page/index.html');
+});
+
+// Handle all other routes by serving index.html (for client-side routing)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/main_page/index.html'));
+});
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)

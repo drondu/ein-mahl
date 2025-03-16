@@ -215,8 +215,8 @@
         </div>
     </div>
 
-    <script>
-        const API_URL = 'http://localhost:3000/api';
+    <script type="module">
+        import CONFIG from '../config.js';
         
         // Check authentication
         function checkAuth() {
@@ -230,7 +230,7 @@
         // Load user profile
         async function loadProfile() {
             try {
-                const response = await fetch(`${API_URL}/profile`, {
+                const response = await fetch(`${CONFIG.API_URL}/profile`, {
                     headers: {
                         'Authorization': `Bearer ${checkAuth()}`
                     }
@@ -261,7 +261,7 @@
         async function saveBio() {
             try {
                 const bio = document.getElementById('bioText').value;
-                const response = await fetch(`${API_URL}/profile`, {
+                const response = await fetch(`${CONFIG.API_URL}/profile`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -292,7 +292,7 @@
                 const base64Image = event.target.result;
 
                 try {
-                    const response = await fetch(`${API_URL}/profile/avatar`, {
+                    const response = await fetch(`${CONFIG.API_URL}/profile/avatar`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
